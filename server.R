@@ -2,14 +2,10 @@
 
 shinyServer(function(input, output) {
 
-  output$distPlot <- renderPlot({
-
-    # generate bins based on input$bins from ui.R
-    x    <- faithful[, 2]
-    bins <- seq(min(x), max(x), length.out = input$bins + 1)
-
-    # draw the histogram with the specified number of bins
-    hist(x, breaks = bins, col = 'darkgray', border = 'white')
+  output$map1 <- renderLeaflet({
+    # bb <- config()$bounding_box
+    leaflet() %>% addTiles() 
+    # %>% fitBounds(bb[1],bb[2],bb[3],bb[4])
 
   })
 
