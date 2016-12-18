@@ -6,7 +6,7 @@ shinyUI(  dashboardPage(
   dashboardBody(
     box(width = 6,leafletOutput('map1'))
     
-
+    
   )
-  )
+)
 )
