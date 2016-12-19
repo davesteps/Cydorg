@@ -5,7 +5,7 @@ shinyUI(  dashboardPage(
   dashboardSidebar(disable = T),
   dashboardBody(
     box(width = 6,leafletOutput('map1')),
-    box(width = 6,tags$iframe(src = "http://192.168.1.78:8081",width=400,height=300, seamless=NA)),
+    box(width = 4,tags$iframe(src = "http://192.168.1.78:8081",width=324,height=244, seamless='seamless')),
     box(verbatimTextOutput('test'))
     
   )
