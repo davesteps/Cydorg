@@ -1,7 +1,17 @@
 
 
-shinyServer(function(input, output) {
 
+
+
+readGPS <- function(fp){jsonlite::fromJSON(readLines(fp))}
+
+shinyServer(function(input, output, session) {
+
+  
+  temp <- reactiveFileReader(2000,session,filePath = 'temp.log',readFunc = readLines)
+  gps <- reactiveFileReader(2000,session,filePath = 'gps.log',readFunc = readGPS)
+  
+  
   output$map1 <- renderLeaflet({
     # bb <- config()$bounding_box
     leaflet() %>% addTiles() 
@@ -9,4 +19,9 @@ shinyServer(function(input, output) {
 
   })
 
+  output$test <- renderPrint({
+    print(temp())
+    str(gps())
+  })
+  
 })
