@@ -1,7 +1,11 @@
 #!/bin/bash
 
+rm /home/pi/Cydorg/temp.log
+
 while true
 do
-	temper > /home/pi/Cydorg/temp.log
+	t=$(temper) 
+	echo $t	>> /home/pi/Cydorg/temp.log
+	echo $t > /home/pi/Cydorg/temp.current
 	sleep 5
 done
