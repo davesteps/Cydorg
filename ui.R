@@ -9,7 +9,6 @@ shinyUI(  dashboardPage(
     # box(width = 4,plotOutput('tempPlot')),
     valueBoxOutput('tempVal',width = 2),
     valueBoxOutput('speedVal',width = 2)
-    
   )
 )
 )
