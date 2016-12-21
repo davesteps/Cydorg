@@ -31,8 +31,8 @@ shinyServer(function(input, output, session) {
     tempLog <<- rbind(tempLog,tempCrnt())
   })
   
-  output$tempTest <- renderTable({
-    tempLog
+  output$tempPlot <- renderPlot({
+    ggplot(tempLog,aes(x=V1,y=V2))+geom_point()
   })
   
   
