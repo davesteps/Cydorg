@@ -25,14 +25,14 @@ shinyServer(function(input, output, session) {
   })
 
   
-  observeEvent(gpsClean(),{
-    
-    lat <- gpsClean()$lat
-    lng <- gpsClean()$lon
-    
-    leafletProxy('map1') %>% addMarkers(lng,lat,layerId = '1') %>% setView(lng,lat,12)
-    
-  })
+  # observeEvent(gpsClean(),{
+  #   
+  #   lat <- gpsClean()$lat
+  #   lng <- gpsClean()$lon
+  #   
+  #   leafletProxy('map1') %>% addMarkers(lng,lat,layerId = '1') %>% setView(lng,lat,12)
+  #   
+  # })
   
   output$test <- renderPrint({
     print(temp())
