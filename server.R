@@ -29,7 +29,7 @@ shinyServer(function(input, output, session) {
   output$tmpPlot <- renderPlot({
     invalidateLater(60e3)
     if(sum(!is.na(tempLog$V1))<10) return(NULL)
-    ggplot(tempLog,aes(x=V1,y=V2))+geom_boxplot()
+    ggplot(tempLog,aes(x=V1,y=V2))+geom_point()+xlab(NULL)+theme_minimal()+ylab('C')
   })
   
   # output$tempVal <- renderValueBox({
@@ -48,12 +48,12 @@ shinyServer(function(input, output, session) {
   output$altPlot <- renderPlot({
     invalidateLater(30e3)
     if(!gpsValid(gpsLog)) return(NULL)
-    ggplot(gpsLog,aes(x=V1,y=V4))+geom_line()
+    ggplot(gpsLog,aes(x=V1,y=V4))+geom_line()+xlab(NULL)+theme_minimal()+ylab('m')
   })
   output$spdPlot <- renderPlot({
     invalidateLater(30e3)
     if(!gpsValid(gpsLog)) return(NULL)
-    ggplot(gpsLog,aes(x=V1,y=V5))+geom_line()
+    ggplot(gpsLog,aes(x=V1,y=V5))+geom_line()+xlab(NULL)+theme_minimal()+ylab('m/s')
   })
   
 
