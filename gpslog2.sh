@@ -13,7 +13,7 @@ lon=$(echo "$gpsdata" | jq -r '.lon')
 # altitude is here, but kinda not important, that’s why it’s commented out, if I decide I want to include it later
 alt=$(echo "$gpsdata" | jq -r '.alt')
 # the speed is measured in m/s from the GPS device – handy to know if the result was taken whilst walking, driving/train or standing still
-speed=$(echo "$gpsdata" | jq -r ‘.speed’)
+speed=$(echo "$gpsdata" | jq -r '.speed')
 
 echo "$time,$lat,$lon,$alt,$speed" >> /home/pi/Cydorg/gps.log2
 
