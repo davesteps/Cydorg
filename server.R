@@ -3,18 +3,42 @@
 
 
 
-readGPS <- function(fp){jsonlite::fromJSON(readLines(fp))}
 
 
-parseTempLog <- function(){}
-parseGPSLog <- function(){}
+parseTemp <- function(f){
+  t <- read.csv(f,header = F,stringsAsFactors = F)
+  t$V1 <- as.POSIXct(t$V1,format='%d-%B-%Y %H:%M')
+  t$V2 <- round(as.numeric(t$V2),2)
+  t
+}
 
+parseGPS <- function(f){
+  fl <- lapply(readLines(f),jsonlite::fromJSON)
+  plyr::ldply(fl,as.data.frame)
+}
 
 shinyServer(function(input, output, session) {
   
-  # load 
+  tempLog <- parseTemp('temp.log')
+  makeReactiveBinding('tempLog')
+  tempCrnt <- reactiveFileReader(2000,session,filePath = 'temp.current',readFunc = parseTemp)
 
-  temp <- reactiveFileReader(2000,session,filePath = 'temp.log',readFunc = readLines)
+  # gpsLog <- parseGPS('gps.log')
+  # makeReactiveBinding('gpsLog')
+  # gpsCrnt <- reactiveFileReader(2000,session,filePath = 'gps.current',readFunc = parseGPS)
+
+  observeEvent(tempCrnt(),{
+    tempLog <<- rbind(tempLog,tempCrnt())
+  })
+  
+  output$tempTest <- renderTable({
+    tempLog
+  })
+  
+  
+  
+  
+  
   # gps <- reactiveFileReader(2000,session,filePath = 'gps.log',readFunc = readGPS)
   # 
   # gpsClean <- reactive({
@@ -40,15 +64,5 @@ shinyServer(function(input, output, session) {
   #   
   # })
   
-  
-  makeReactiveBinding('tempdf')
-  observeEvent(temp(),{
-
-  })
-  
-  output$test <- renderPrint({
-    s <- strsplit(temp(),',')
-    print(s)
-  })
   
 })
