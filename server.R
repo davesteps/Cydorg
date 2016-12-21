@@ -20,20 +20,23 @@ parseGPS <- function(f){
 shinyServer(function(input, output, session) {
   
   tempLog <- parseTemp('temp.log')
-  makeReactiveBinding('tempLog')
   tempCrnt <- reactiveFileReader(2000,session,filePath = 'temp.current',readFunc = parseTemp)
-
-  # gpsLog <- parseGPS('gps.log')
-  # makeReactiveBinding('gpsLog')
-  # gpsCrnt <- reactiveFileReader(2000,session,filePath = 'gps.current',readFunc = parseGPS)
-
+  
   observeEvent(tempCrnt(),{
     tempLog <<- rbind(tempLog,tempCrnt())
   })
-  
-  output$tempPlot <- renderPlot({
+  output$tempVal <- renderPlot({
+    invalidateLater(60e3)
     ggplot(tempLog,aes(x=V1,y=V2))+geom_point()
   })
+  output$tempVal <- renderValueBox({
+    valueBox(tempCrnt$V2,'C',icon = icon('thermometer')
+    )
+  })
+  
+  # gpsLog <- parseGPS('gps.log')
+  # makeReactiveBinding('gpsLog')
+  # gpsCrnt <- reactiveFileReader(2000,session,filePath = 'gps.current',readFunc = parseGPS)
   
   
   
