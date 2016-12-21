@@ -25,13 +25,12 @@ shinyServer(function(input, output, session) {
   observeEvent(tempCrnt(),{
     tempLog <<- rbind(tempLog,tempCrnt())
   })
-  output$tempVal <- renderPlot({
+  output$tempPlot <- renderPlot({
     invalidateLater(60e3)
     ggplot(tempLog,aes(x=V1,y=V2))+geom_point()
   })
   output$tempVal <- renderValueBox({
-    valueBox(tempCrnt$V2,'C',icon = icon('thermometer')
-    )
+    valueBox(tempCrnt()$V2,'C',icon = icon('thermometer'),width = 2)
   })
   
   # gpsLog <- parseGPS('gps.log')
