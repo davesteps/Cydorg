@@ -27,10 +27,15 @@ shinyServer(function(input, output, session) {
   observeEvent(gpsCrnt(),{
     gpsLog <<- rbind(gpsLog,gpsCrnt())
   })
-  output$speedVal <- renderValueBox({
-    valueBox(gpsCrnt()$speed,subtitle = 'm/s',width = 2)
+  
+  output$gps <- renderPrint({
+    str(gpsLog)
   })
   
+  # output$speedVal <- renderValueBox({
+  #   valueBox(gpsCrnt()$speed,subtitle = 'm/s',width = 2)
+  # })
+  # 
   # output$altPlot <- renderPlot({
   #   invalidateLater(60e3)
   #   if(nrow(gpsLog)<10) return(NULL)
