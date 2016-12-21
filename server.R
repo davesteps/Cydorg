@@ -26,71 +26,65 @@ shinyServer(function(input, output, session) {
   observeEvent(tempCrnt(),{
     tempLog <<- rbind(tempLog,tempCrnt())
   })
-  # output$tempPlot <- renderPlot({
-  #   invalidateLater(60e3)
-  #   if(nrow(tempLog)<10) return(NULL)
-  #   ggplot(tempLog,aes(x=V1,y=V2))+geom_boxplot()
-  # })
+  output$tmpPlot <- renderPlot({
+    invalidateLater(60e3)
+    if(sum(!is.na(tempLog$V1))<10) return(NULL)
+    ggplot(tempLog,aes(x=V1,y=V2))+geom_boxplot()
+  })
+  
   # output$tempVal <- renderValueBox({
+  
   #   valueBox(tempCrnt()$V2,subtitle = 'C',icon = icon('thermometer-0'),width = 2)
   # })
   
   gpsLog <- parseGPS('gps.log')
   gpsCrnt <- reactiveFileReader(2000,session,filePath = 'gps.current',readFunc = parseGPS)
+  gpsValid <- function(gpsLog) sum(!is.na(gpsLog$V1))>5
   
   observeEvent(gpsCrnt(),{
     gpsLog <<- rbind(gpsLog,gpsCrnt())
   })
   
-  output$gps <- renderPrint({
-    print(gpsCrnt())
+  output$altPlot <- renderPlot({
+    invalidateLater(30e3)
+    if(!gpsValid(gpsLog)) return(NULL)
+    ggplot(gpsLog,aes(x=V1,y=V4))+geom_line()
   })
-  output$temp <- renderPrint({
-    print(tempCrnt())
+  output$spdPlot <- renderPlot({
+    invalidateLater(30e3)
+    if(!gpsValid(gpsLog)) return(NULL)
+    ggplot(gpsLog,aes(x=V1,y=V5))+geom_line()
   })
-  output$gpsLog <- renderTable({
-    gpsLog
-  }) 
-  output$tempLog <- renderTable({
-    tempLog
-  }) 
   
-  
+
   
   # output$speedVal <- renderValueBox({
   #   valueBox(gpsCrnt()$speed,subtitle = 'm/s',width = 2)
   # })
   # 
-  # output$altPlot <- renderPlot({
-  #   invalidateLater(60e3)
-  #   if(nrow(gpsLog)<10) return(NULL)
-  #   ggplot(gpsLog,aes(x=V1,y=V2))+geom_boxplot()
-  # })
-  
-  # gps <- reactiveFileReader(2000,session,filePath = 'gps.log',readFunc = readGPS)
-  # 
-  # gpsClean <- reactive({
-  #   if(class(gps())!='list')
-  #     return()
-  #   gps()
-  # })
+
   
   output$map1 <- renderLeaflet({
-    # bb <- config()$bounding_box
     leaflet() %>% addTiles()  
-    # %>% fitBounds(bb[1],bb[2],bb[3],bb[4])
-
+    
   })
-
   
-  # observeEvent(gpsClean(),{
-  #   
-  #   lat <- gpsClean()$lat
-  #   lng <- gpsClean()$lon
-  #   
-  #   leafletProxy('map1') %>% addMarkers(lng,lat,layerId = '1') %>% setView(lng,lat,12)
-  #   
-  # })
   
+  observeEvent(gpsCrnt(),{
+    lat <- gpsCrnt()$V2
+    lng <- gpsCrnt()$V3
+    if(!is.na(lng)&&!is.na(lat))
+      leafletProxy('map1') %>% addMarkers(lng,lat,layerId = '1') 
+  })
+  observe({
+    invalidateLater(60e3)
+    if(gpsValid(gpsLog)){
+      t <- gpsLog
+      t <- t[!is.na(t$V3)&!is.na(t$V2),]
+      leafletProxy('map1') %>% addCircleMarkers(t$V3,t$V2,5,layerId = '2',stroke = F,fillOpacity = 0.8,
+                                                color = "red") %>% setView(mean(t$V3),mean(t$V2),15)
+    }
+  })
+  # 
   
 })
