@@ -1,6 +1,20 @@
 
 
 
+parseTemp <- function(f){
+  t <- read.csv(f,header = F,stringsAsFactors = F)
+  t$V1 <- as.POSIXct(t$V1,format='%d-%B-%Y %H:%M')
+  t$V2 <- round(as.numeric(t$V2),2)
+  t
+}
+
+parseGPS <- function(f){
+  t <- read.csv(f,header = F,stringsAsFactors = F)
+  t$V1 <- as.POSIXct(t$V1,format='%Y-%m-%dT%H:%M:%S')
+  t[2:5] <- lapply(t[2:5],as.numeric)
+  t
+}
+
 
 
 
@@ -12,14 +26,14 @@ shinyServer(function(input, output, session) {
   observeEvent(tempCrnt(),{
     tempLog <<- rbind(tempLog,tempCrnt())
   })
-  output$tempPlot <- renderPlot({
-    invalidateLater(60e3)
-    if(nrow(tempLog)<10) return(NULL)
-    ggplot(tempLog,aes(x=V1,y=V2))+geom_boxplot()
-  })
-  output$tempVal <- renderValueBox({
-    valueBox(tempCrnt()$V2,subtitle = 'C',icon = icon('thermometer-0'),width = 2)
-  })
+  # output$tempPlot <- renderPlot({
+  #   invalidateLater(60e3)
+  #   if(nrow(tempLog)<10) return(NULL)
+  #   ggplot(tempLog,aes(x=V1,y=V2))+geom_boxplot()
+  # })
+  # output$tempVal <- renderValueBox({
+  #   valueBox(tempCrnt()$V2,subtitle = 'C',icon = icon('thermometer-0'),width = 2)
+  # })
   
   gpsLog <- parseGPS('gps.log')
   gpsCrnt <- reactiveFileReader(2000,session,filePath = 'gps.current',readFunc = parseGPS)
@@ -29,8 +43,19 @@ shinyServer(function(input, output, session) {
   })
   
   output$gps <- renderPrint({
-    str(gpsLog)
+    print(gpsCrnt())
   })
+  output$temp <- renderPrint({
+    print(tempCrnt())
+  })
+  output$gpsLog <- renderTable({
+    gpsLog
+  }) 
+  output$tempLog <- renderTable({
+    tempLog
+  }) 
+  
+  
   
   # output$speedVal <- renderValueBox({
   #   valueBox(gpsCrnt()$speed,subtitle = 'm/s',width = 2)
