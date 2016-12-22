@@ -20,6 +20,12 @@ parseGPS <- function(f){
 
 shinyServer(function(input, output, session) {
   
+  
+  output$ip <- renderPrint({
+    x <- system("ifconfig", intern=TRUE)
+    x[grep(x,'wlan0'):length(x)]
+    
+    })
   tempLog <- parseTemp('temp.log')
   tempCrnt <- reactiveFileReader(2000,session,filePath = 'temp.current',readFunc = parseTemp)
   

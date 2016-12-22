@@ -6,10 +6,11 @@ shinyUI(  dashboardPage(
   dashboardBody(
     fluidRow(
       column(width=4,
-             box(width = 12,leafletOutput('map1',height = 300))
+             box(width = 12,tags$iframe(src = "http://192.168.1.78:8081",width=324,height=244, seamless='seamless',align = "center"))
              ),
       column(width=4,
-             box(width = 12,tags$iframe(src = "http://192.168.1.78:8081",width=324,height=244, seamless='seamless',align = "center"))
+             box(width = 12,leafletOutput('map1',height = 300)),
+             box(width = 12,verbatimTextOutput('ip'))
 
              ),
       column(width=4,
