@@ -1,7 +1,7 @@
 #!/bin/bash
 
 sleep 10
-rm /home/pi/Cydorg/gps.log
+rm /home/pi/mydogbytes/gps.log
 
 while true
 do
@@ -11,7 +11,7 @@ do
   lon=$(echo "$gpsdata" | jq -r '.lon')
   alt=$(echo "$gpsdata" | jq -r '.alt')
   speed=$(echo "$gpsdata" | jq -r '.speed')
-  echo "$time,$lat,$lon,$alt,$speed" >> /home/pi/Cydorg/gps.log
-  echo "$time,$lat,$lon,$alt,$speed" > /home/pi/Cydorg/gps.current
+  echo "$time,$lat,$lon,$alt,$speed" >> /home/pi/mydogbytes/gps.log
+  echo "$time,$lat,$lon,$alt,$speed" > /home/pi/mydogbytes/gps.current
 	sleep 3
 done
