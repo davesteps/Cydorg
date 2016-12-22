@@ -1,7 +1,7 @@
 
 
 shinyUI(  dashboardPage(  
-  dashboardHeader(title = 'DogTelemtry'),
+  dashboardHeader(title = 'MyDogBytes'),
   dashboardSidebar(disable = T),
   dashboardBody(
     fluidRow(

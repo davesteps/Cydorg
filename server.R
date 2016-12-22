@@ -35,7 +35,7 @@ shinyServer(function(input, output, session) {
   output$tmpPlot <- renderPlot({
     invalidateLater(60e3)
     if(sum(!is.na(tempLog$V1))<10) return(NULL)
-    ggplot(tempLog,aes(x=V1,y=V2))+geom_point()+xlab(NULL)+theme_minimal()+ylab('C')
+    ggplot(tempLog,aes(x=V1,y=V2,group=V1))+geom_boxplot()+xlab(NULL)+theme_minimal()+ylab('C')
   })
   
   # output$tempVal <- renderValueBox({
