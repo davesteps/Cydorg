@@ -28,20 +28,33 @@ shinyServer(function(input, output, session) {
     })
   tempLog <- parseTemp('temp.log')
   tempCrnt <- reactiveFileReader(2000,session,filePath = 'temp.current',readFunc = parseTemp)
-  
+  tmpValid <- function(tempLog) sum(!is.na(tempLog$V1))>10
   observeEvent(tempCrnt(),{
     tempLog <<- rbind(tempLog,tempCrnt())
   })
+  
+  tempRefresh <- reactive({
+    invalidateLater(30e3)
+    if(!tmpValid(tempLog)) {
+      return(NULL)
+    } else {
+      return(rnorm(1))
+    }
+  })
+  
   output$tmpPlot <- renderPlot({
-    invalidateLater(60e3)
-    if(sum(!is.na(tempLog$V1))<10) return(NULL)
+    tempRefresh()
     ggplot(tempLog,aes(x=V1,y=V2,group=V1))+geom_boxplot()+xlab(NULL)+theme_minimal()+ylab('C')
   })
   
-  # output$tempVal <- renderValueBox({
-  
-  #   valueBox(tempCrnt()$V2,subtitle = 'C',icon = icon('thermometer-0'),width = 2)
-  # })
+  output$tempCrnt <- renderValueBox({
+    valueBox(tempCrnt()$V2,subtitle = 'C',icon = icon('thermometer-0'),width = 2)
+  })
+  output$tempSum <- renderValueBox({
+    tempRefresh()
+    valueBox(max(tempLog$V2,na.rm = T),subtitle = 'Temp. max',icon = icon('thermometer-0'),width = 2)
+  })
+
   
   gpsLog <- parseGPS('gps.log')
   gpsCrnt <- reactiveFileReader(2000,session,filePath = 'gps.current',readFunc = parseGPS)
@@ -50,24 +63,36 @@ shinyServer(function(input, output, session) {
   observeEvent(gpsCrnt(),{
     gpsLog <<- rbind(gpsLog,gpsCrnt())
   })
-  
+  gpsRefresh <- reactive({
+    invalidateLater(60e3)
+    if(!gpsValid(gpsLog)) {
+      return(NULL)
+    } else {
+      return(rnorm(1))
+    }
+  })
   output$altPlot <- renderPlot({
-    invalidateLater(30e3)
-    if(!gpsValid(gpsLog)) return(NULL)
+    gpsRefresh()
     ggplot(gpsLog,aes(x=V1,y=V4))+geom_line()+xlab(NULL)+theme_minimal()+ylab('m')
   })
   output$spdPlot <- renderPlot({
-    invalidateLater(30e3)
-    if(!gpsValid(gpsLog)) return(NULL)
+    gpsRefresh()
     ggplot(gpsLog,aes(x=V1,y=V5))+geom_line()+xlab(NULL)+theme_minimal()+ylab('m/s')
   })
-  
+  output$altRng <- renderValueBox({
+    gpsRefresh()
+    valueBox(max(gpsLog$V4,na.rm = T)-min(gpsLog$V4,na.rm = T),subtitle = 'Alt range',icon = icon('thermometer-0'),width = 2)
+  })
+  output$spdMean <- renderValueBox({
+    gpsRefresh()
+    valueBox(mean(gpsLog$V5,na.rm = T),subtitle = 'Speed Mean',icon = icon('thermometer-0'),width = 2)
+  })
+  output$spdMax <- renderValueBox({
+    gpsRefresh()
+    valueBox(max(gpsLog$V5,na.rm = T),subtitle = 'Speed Max',icon = icon('thermometer-0'),width = 2)
+  })
 
-  
-  # output$speedVal <- renderValueBox({
-  #   valueBox(gpsCrnt()$speed,subtitle = 'm/s',width = 2)
-  # })
-  # 
+
 
   
   output$map1 <- renderLeaflet({
@@ -83,13 +108,12 @@ shinyServer(function(input, output, session) {
       leafletProxy('map1') %>% addMarkers(lng,lat,layerId = '1') 
   })
   observe({
-    invalidateLater(60e3)
-    if(gpsValid(gpsLog)){
-      t <- gpsLog
-      t <- t[!is.na(t$V3)&!is.na(t$V2),]
-      leafletProxy('map1') %>% addCircleMarkers(t$V3,t$V2,5,layerId = '2',stroke = F,fillOpacity = 0.8,
+    gpsRefresh()
+    t <- gpsLog
+    t <- t[!is.na(t$V3)&!is.na(t$V2),]
+    leafletProxy('map1') %>% addCircleMarkers(t$V3,t$V2,5,layerId = '2',stroke = F,fillOpacity = 0.8,
                                                 color = "red") %>% setView(mean(t$V3),mean(t$V2),15)
-    }
+
   })
   # 
   

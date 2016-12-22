@@ -6,11 +6,16 @@ shinyUI(  dashboardPage(
   dashboardBody(
     fluidRow(
       column(width=4,
-             box(width = 12,tags$iframe(src = "http://192.168.1.78:8081",width=324,height=244, seamless='seamless',align = "center"))
+             box(width = 12,tags$iframe(src = "http://192.168.1.78:8081",width=324,height=244, seamless='seamless')),
+             box(width = 12,leafletOutput('map1',height = 300))
              ),
       column(width=4,
-             box(width = 12,leafletOutput('map1',height = 300)),
-             box(width = 12,verbatimTextOutput('ip'))
+             box(width = 12,verbatimTextOutput('ip'),collapsible = T,collapsed = T),
+             valueBoxOutput('tempCrnt',width = 6),
+             valueBoxOutput('tempSum',width = 6),
+             valueBoxOutput('altRng',width = 6),
+             valueBoxOutput('spdMean',width = 6),
+             valueBoxOutput('spdMax',width = 6)
 
              ),
       column(width=4,
