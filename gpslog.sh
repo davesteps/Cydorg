@@ -1,5 +1,6 @@
 #!/bin/bash
 
+sleep 10
 rm /home/pi/Cydorg/gps.log
 
 while true
