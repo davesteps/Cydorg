@@ -23,7 +23,7 @@ shinyServer(function(input, output, session) {
   
   output$ip <- renderPrint({
     x <- system("ifconfig", intern=TRUE)
-    x[grep(x,'wlan0'):length(x)]
+    x[grep('wlan0',x):length(x)]
     
     })
   tempLog <- parseTemp('temp.log')
