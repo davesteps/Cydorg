@@ -13,7 +13,8 @@ shinyUI(  dashboardPage(
              box(width = 12,verbatimTextOutput('ip'),collapsible = T,collapsed = T),
              valueBoxOutput('tempCrnt',width = 6),
              valueBoxOutput('tempSum',width = 6),
-             valueBoxOutput('altRng',width = 6),
+             valueBoxOutput('altMin',width = 6),
+             valueBoxOutput('altMax',width = 6),
              valueBoxOutput('spdMean',width = 6),
              valueBoxOutput('spdMax',width = 6)
 
@@ -24,11 +25,6 @@ shinyUI(  dashboardPage(
              box(width = 12,plotOutput('spdPlot',height = 130),solidHeader = T,footer = 'Speed')
              )
     )
-    # ,
-    # ,
-   
-    # valueBoxOutput('tempVal',width = 2),
-    # valueBoxOutput('speedVal',width = 2)
   )
 )
 )

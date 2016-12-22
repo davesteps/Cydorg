@@ -79,13 +79,20 @@ shinyServer(function(input, output, session) {
     gpsRefresh()
     ggplot(gpsLog,aes(x=V1,y=V5))+geom_line()+xlab(NULL)+theme_minimal()+ylab('m/s')
   })
-  output$altRng <- renderValueBox({
+  output$altMin <- renderValueBox({
     gpsRefresh()
-    valueBox(max(gpsLog$V4,na.rm = T)-min(gpsLog$V4,na.rm = T),subtitle = 'Alt range',icon = icon('thermometer-0'),width = 2)
+    v <- min(gpsLog$V4,na.rm = T)
+    valueBox(v,subtitle = 'Alt min',icon = icon('thermometer-0'),width = 2)
+  })
+  output$altMax <- renderValueBox({
+    gpsRefresh()
+    v <- max(gpsLog$V4,na.rm = T)
+    valueBox(max(gpsLog$V4,na.rm = T),subtitle = 'Alt max',icon = icon('thermometer-0'),width = 2)
   })
   output$spdMean <- renderValueBox({
     gpsRefresh()
-    valueBox(mean(gpsLog$V5,na.rm = T),subtitle = 'Speed Mean',icon = icon('thermometer-0'),width = 2)
+    v <- round(mean(gpsLog$V5,na.rm = T),2)
+    valueBox(v,subtitle = 'Speed Mean',icon = icon('thermometer-0'),width = 2)
   })
   output$spdMax <- renderValueBox({
     gpsRefresh()
