@@ -44,11 +44,11 @@ shinyServer(function(input, output, session) {
   
   output$tmpPlot <- renderPlot({
     tempRefresh()
-    ggplot(tempLog,aes(x=V1,y=V2,group=V1))+geom_boxplot()+xlab(NULL)+theme_minimal()+ylab('C')
+    ggplot(tempLog,aes(x=V1,y=V2))+geom_line()+xlab(NULL)+theme_minimal()+ylab('C')
   })
   
   output$tempCrnt <- renderValueBox({
-    valueBox(tempCrnt()$V2,subtitle = 'C',icon = icon('thermometer-0'),width = 2)
+    valueBox(tempCrnt()$V2,subtitle = 'Temp. current',icon = icon('thermometer-1'),width = 2)
   })
   output$tempSum <- renderValueBox({
     tempRefresh()
@@ -73,30 +73,31 @@ shinyServer(function(input, output, session) {
   })
   output$altPlot <- renderPlot({
     gpsRefresh()
-    ggplot(gpsLog,aes(x=V1,y=V4))+geom_line()+xlab(NULL)+theme_minimal()+ylab('m')
+    ggplot(gpsLog,aes(x=V1,y=V4))+geom_line(col=2)+xlab(NULL)+theme_minimal()+ylab('m')
   })
   output$spdPlot <- renderPlot({
     gpsRefresh()
-    ggplot(gpsLog,aes(x=V1,y=V5))+geom_line()+xlab(NULL)+theme_minimal()+ylab('m/s')
+    ggplot(gpsLog,aes(x=V1,y=V5))+geom_line(col=3)+xlab(NULL)+theme_minimal()+ylab('m/s')
   })
   output$altMin <- renderValueBox({
     gpsRefresh()
     v <- min(gpsLog$V4,na.rm = T)
-    valueBox(v,subtitle = 'Alt min',icon = icon('thermometer-0'),width = 2)
+    valueBox(v,subtitle = 'Alt min',icon = icon('thermometer-0'),width = 2,color='olive')
   })
   output$altMax <- renderValueBox({
     gpsRefresh()
     v <- max(gpsLog$V4,na.rm = T)
-    valueBox(max(gpsLog$V4,na.rm = T),subtitle = 'Alt max',icon = icon('thermometer-0'),width = 2)
+    valueBox(max(gpsLog$V4,na.rm = T),subtitle = 'Alt max',color='olive',width = 2)
   })
   output$spdMean <- renderValueBox({
     gpsRefresh()
     v <- round(mean(gpsLog$V5,na.rm = T),2)
-    valueBox(v,subtitle = 'Speed Mean',icon = icon('thermometer-0'),width = 2)
+    valueBox(v,subtitle = 'Speed Mean',color='maroon',width = 2)
   })
   output$spdMax <- renderValueBox({
     gpsRefresh()
-    valueBox(max(gpsLog$V5,na.rm = T),subtitle = 'Speed Max',icon = icon('thermometer-0'),width = 2)
+    valueBox(max(gpsLog$V5,na.rm = T),subtitle = 'Speed Max',color='maroon'
+             ,icon = icon('thermometer-0'),width = 2)
   })
 
 
