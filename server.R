@@ -52,7 +52,7 @@ shinyServer(function(input, output, session) {
   })
   output$tempSum <- renderValueBox({
     tempRefresh()
-    valueBox(max(tempLog$V2,na.rm = T),subtitle = 'Temp. max',icon = icon('thermometer-0'),width = 2)
+    valueBox(max(tempLog$V2,na.rm = T),subtitle = 'Temp. max',icon = icon('fa fa-thermometer'),width = 2)
   })
 
   
